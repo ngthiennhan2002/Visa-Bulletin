@@ -1,6 +1,6 @@
 requests
 datetime
-beatifulsoup4
+beautifulsoup4
 urllib
 smtplib
 email
