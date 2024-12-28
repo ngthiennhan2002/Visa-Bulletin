@@ -1,7 +1,7 @@
 requests
 datetime
 beautifulsoup4
-urllib
+urllib3
 smtplib
 email
 time
