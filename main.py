@@ -2,12 +2,12 @@ import requests
 from datetime import datetime
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
-import smtplib, ssl
+import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from twilio.rest import Client
 import time
-from playsound import playsound
+# from twilio.rest import Client
+# from playsound import playsound
 
 port = 465
 app_pw = "qrre fexe jkwd kskf"

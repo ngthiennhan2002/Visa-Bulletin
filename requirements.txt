@@ -1,0 +1,7 @@
+requests
+datetime
+beatifulsoup4
+urllib
+smtplib
+email
+time
