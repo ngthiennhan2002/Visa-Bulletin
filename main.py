@@ -76,7 +76,8 @@ def get_visa_bulletin():
        
 from_email = "nhan.sg.americanstudy@gmail.com"
 from_pw = "qrre fexe jkwd kskf"
-to_email = ["ngthiennhan2002@gmail.com", "ngthienphuc2006@gmail.com", "ngthien11@gmail.com"]
+# to_email = ["ngthiennhan2002@gmail.com", "ngthienphuc2006@gmail.com", "ngthien11@gmail.com"]
+to_email = ["ngthiennhan2002@gmail.com"]
 subject = "Test"
 body = ''
  
@@ -90,53 +91,74 @@ def send_email(subject, body, from_email, from_pw, to_email):
     year = datetime.now().year
     date = f"{day}/{month}/{year} {hour}:{minute}:{second}"
     
-    if visa_bulletin is None:
-        print(f"{date} - CHƯA CÓ LỊCH VISA THÁNG TỚI")
-    else:
-        subject = "F4: " + visa_bulletin + f" - ĐÃ CÓ LỊCH VISA THÁNG {month + 1}. F4: "
-        body = f"""
-        Xin chào,
+    if day >= 5 and day <= 20:
+        if visa_bulletin is None:
+            print(f"{date} - CHƯA CÓ LỊCH VISA THÁNG TỚI")
+            return False
+        else:
+            subject = "F4: " + visa_bulletin + f" - ĐÃ CÓ LỊCH VISA THÁNG {month + 1}. F4: "
+            body = f"""
+            Xin chào,
 
-        Hiện tại đã có lịch visa tháng của tháng {month + 1}.
-        Nội dung: F4 ({visa_bulletin})
-        Lịch Visa có vào lúc {date}.
+            Hiện tại đã có lịch visa tháng của tháng {month + 1}.
+            Nội dung: F4 ({visa_bulletin})
+            Lịch Visa có vào lúc {date}.
 
-        Trân trọng,
-        Nhân.
+            Trân trọng,
+            Nhân.
 
-        P/s: Đây là email tự động.
-        """
+            P/s: Đây là email tự động.
+            """
+            
+            from_email = from_email
+            password = from_pw
         
-        from_email = from_email
-        password = from_pw
-    
-        # Tạo một đối tượng MIMEMultipart
-        msg = MIMEMultipart()
-        msg['From'] = from_email
-        msg['To'] = ', '.join(to_email)
-        msg['Subject'] = subject
-    
-        # Thêm phần thân email
-        msg.attach(MIMEText(body, 'plain'))
-    
-        try:
-            # Kết nối tới server SMTP của Gmail
-            server = smtplib.SMTP('smtp.gmail.com', 587)
-            server.starttls()
-            server.login(from_email, password)
-            text = msg.as_string()
-            server.sendmail(from_email, to_email, text)
-            server.quit()
-            print("Email đã được gửi thành công!")
-            # playsound("D:\\Videos\Criminal.mp4")
-            return True
-        except Exception as e:
-            print(f"Không thể gửi email. Lỗi: {e}")
+            # Tạo một đối tượng MIMEMultipart
+            msg = MIMEMultipart()
+            msg['From'] = from_email
+            msg['To'] = ', '.join(to_email)
+            msg['Subject'] = subject
+        
+            # Thêm phần thân email
+            msg.attach(MIMEText(body, 'plain'))
+        
+            try:
+                # Kết nối tới server SMTP của Gmail
+                server = smtplib.SMTP('smtp.gmail.com', 587)
+                server.starttls()
+                server.login(from_email, password)
+                text = msg.as_string()
+                server.sendmail(from_email, to_email, text)
+                server.quit()
+                print("Email đã được gửi thành công!")
+                # playsound("D:\\Videos\Criminal.mp4")
+                return True
+            except Exception as e:
+                print(f"Không thể gửi email. Lỗi: {e}")
+
+
+email_sent = False  # Trạng thái theo dõi việc gửi email
+continue_checking = False
 
 while True:
-    check = send_email(subject, body, from_email, from_pw, to_email)
+    today = datetime.now()
+    
+    if 5 <= today.day <= 20 and email_sent == False:
+        continue_checking = True
+
+    if continue_checking:  # Chỉ chạy từ ngày 5 đến ngày 20
+        check = send_email(subject, body, from_email, from_pw, to_email)
+        if check:
+            continue_checking = False
+            email_sent = True
+            print("App disabled. Waiting until new month...")
+            
+    if today.day == 1:
+        print("Starting new month...")
+        email_sent = False
+        continue_checking = False
+        
+    if 2 <= today.day < 5 or 20 < today.day <= 31:
+        print("Waiting until new month...")
+    
     time.sleep(5)
-    if check == True:
-        break
-    
-    
