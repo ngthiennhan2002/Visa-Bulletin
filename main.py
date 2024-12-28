@@ -28,10 +28,7 @@ months_dict = {1: "january",
                11: "november",
                12: "december"}
 
-def check_status():
-    month = datetime.now().month + 1  # tháng tiếp theo
-    year = datetime.now().year
-
+def check_status(month, year):
     if month in months_dict:
         month = months_dict[month]
 
@@ -42,10 +39,10 @@ def check_status():
         link = f"https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin/{year}/visa-bulletin-for-{month}-{year}.html"
 
     res = requests.get(link)
-    return res.status_code, month, year, link
+    return res.status_code, link
     
-def get_visa_bulletin():
-    status_code, month, year, link = check_status()
+def get_visa_bulletin(month, year):
+    status_code, link = check_status(month, year)
     n_second = datetime.now().second
     n_minute = datetime.now().minute
     n_hour = datetime.now().hour
@@ -69,7 +66,7 @@ def get_visa_bulletin():
             if len(tds_in_row_6) >= 2:
                 # Lấy giá trị của thẻ <td> thứ hai
                 td_value = tds_in_row_6[1].get_text().strip()
-                print(f"{n_date} - ĐÃ CÓ LỊCH VISA F4 {month.upper()}/{year}:", td_value)
+                print(f"{n_date} - ĐÃ CÓ LỊCH VISA F4 {str(month).upper()}/{str(year)}:", td_value)
                 return td_value
     else:
         return None
@@ -82,7 +79,6 @@ subject = "Test"
 body = ''
  
 def send_email(subject, body, from_email, from_pw, to_email):
-    visa_bulletin = get_visa_bulletin()
     second = datetime.now().second
     minute = datetime.now().minute
     hour = datetime.now().hour
@@ -91,50 +87,51 @@ def send_email(subject, body, from_email, from_pw, to_email):
     year = datetime.now().year
     date = f"{day}/{month}/{year} {hour}:{minute}:{second}"
     
-    if day >= 5 and day <= 20:
-        if visa_bulletin is None:
-            print(f"{date} - CHƯA CÓ LỊCH VISA THÁNG TỚI")
-            return False
-        else:
-            subject = "F4: " + visa_bulletin + f" - ĐÃ CÓ LỊCH VISA THÁNG {month + 1}. F4: "
-            body = f"""
-            Xin chào,
+    visa_bulletin = get_visa_bulletin(month, year)
+    
+    if visa_bulletin is None:
+        print(f"{date} - CHƯA CÓ LỊCH VISA THÁNG {str(month)}/{str(year)}")
+        return False
+    else:
+        subject = "F4: " + visa_bulletin + f" - ĐÃ CÓ LỊCH VISA THÁNG {month}. F4: {visa_bulletin}"
+        body = f"""
+        Xin chào,
 
-            Hiện tại đã có lịch visa tháng của tháng {month + 1}.
-            Nội dung: F4 ({visa_bulletin})
-            Lịch Visa có vào lúc {date}.
+        Hiện tại đã có lịch visa tháng của tháng {month}.
+        Nội dung: F4 ({visa_bulletin})
+        Lịch Visa có vào lúc {date}.
 
-            Trân trọng,
-            Nhân.
+        Trân trọng,
+        Nhân.
 
-            P/s: Đây là email tự động.
-            """
-            
-            from_email = from_email
-            password = from_pw
+        P/s: Đây là email tự động.
+        """
         
-            # Tạo một đối tượng MIMEMultipart
-            msg = MIMEMultipart()
-            msg['From'] = from_email
-            msg['To'] = ', '.join(to_email)
-            msg['Subject'] = subject
-        
-            # Thêm phần thân email
-            msg.attach(MIMEText(body, 'plain'))
-        
-            try:
-                # Kết nối tới server SMTP của Gmail
-                server = smtplib.SMTP('smtp.gmail.com', 587)
-                server.starttls()
-                server.login(from_email, password)
-                text = msg.as_string()
-                server.sendmail(from_email, to_email, text)
-                server.quit()
-                print("Email đã được gửi thành công!")
-                # playsound("D:\\Videos\Criminal.mp4")
-                return True
-            except Exception as e:
-                print(f"Không thể gửi email. Lỗi: {e}")
+        from_email = from_email
+        password = from_pw
+    
+        # Tạo một đối tượng MIMEMultipart
+        msg = MIMEMultipart()
+        msg['From'] = from_email
+        msg['To'] = ', '.join(to_email)
+        msg['Subject'] = subject
+    
+        # Thêm phần thân email
+        msg.attach(MIMEText(body, 'plain'))
+    
+        try:
+            # Kết nối tới server SMTP của Gmail
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+            server.login(from_email, password)
+            text = msg.as_string()
+            server.sendmail(from_email, to_email, text)
+            server.quit()
+            print("Email đã được gửi thành công!")
+            # playsound("D:\\Videos\Criminal.mp4")
+            return True
+        except Exception as e:
+            print(f"Không thể gửi email. Lỗi: {e}")
 
 
 email_sent = False  # Trạng thái theo dõi việc gửi email
@@ -142,8 +139,9 @@ continue_checking = False
 
 while True:
     today = datetime.now()
+    day = today.date
     
-    if 5 <= today.day <= 20 and email_sent == False:
+    if 5 <= day <= 28 and email_sent == False:
         continue_checking = True
 
     if continue_checking:  # Chỉ chạy từ ngày 5 đến ngày 20
@@ -153,12 +151,10 @@ while True:
             email_sent = True
             print("App disabled. Waiting until new month...")
             
-    if today.day == 1:
+    if day == 1:
         print("Starting new month...")
         email_sent = False
         continue_checking = False
         
-    if 2 <= today.day < 5 or 20 < today.day <= 31:
-        print("Waiting until new month...")
-    
-    time.sleep(5)
+    if 2 <= day < 5 or 28 < day <= 31:
+        print("Waiting...")
