@@ -97,11 +97,11 @@ def send_email(subject, body, from_email, from_pw, to_email):
         print(f"{date} - CHƯA CÓ LỊCH VISA THÁNG {str(month)}/{str(year)}")
         return False
     else:
-        subject = "F4: " + visa_bulletin + f" - ĐÃ CÓ LỊCH VISA THÁNG {month}. F4: {visa_bulletin}"
+        subject = f"[F4 - {visa_bulletin}. ĐÃ CÓ LỊCH VISA THÁNG {month}. F4: {visa_bulletin}"
         body = f"""
         Xin chào,
 
-        Hiện tại đã có lịch visa tháng của tháng {month}.
+        Hiện tại đã có lịch visa của tháng {month}.
         Nội dung: F4 ({visa_bulletin})
         Lịch Visa có vào lúc {date} (giờ Mỹ).
 
