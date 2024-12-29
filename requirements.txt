@@ -1,5 +1,3 @@
 requests
-datetime
 beautifulsoup4
 urllib3
-email
