@@ -148,7 +148,7 @@ while True:
     today = datetime.now()
     day = today.day
     
-    if 5 <= day <= 29 and email_sent == False:
+    if 5 <= day <= 20 and email_sent == False:
         continue_checking = True
 
     if continue_checking:  # Chỉ chạy từ ngày 5 đến ngày 20
@@ -163,7 +163,7 @@ while True:
         email_sent = False
         continue_checking = False
         
-    if 2 <= day < 5 or 29 < day <= 31:
+    if 2 <= day < 5 or 20 < day <= 31:
         print("Waiting...")
     
     time.sleep(10)
