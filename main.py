@@ -40,11 +40,6 @@ months_dict = {1: "january",
                12: "december"}
 
 def check_status(month, year):
-    if month == 13:
-        month = 1
-        year += 1
-        link = f"https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin/{year}/visa-bulletin-for-{month}-{year}.html"
-    
     if month in months_dict:
         month = months_dict[month]
 
@@ -83,9 +78,9 @@ def get_visa_bulletin(month, year):
                 # Lấy giá trị của thẻ <td> thứ hai
                 td_value = tds_in_row_6[1].get_text().strip()
                 print(f"{n_date} - ĐÃ CÓ LỊCH VISA F4 {str(month).upper()}/{str(year)}:", td_value)
-                return td_value
+                return td_value, link
     else:
-        return None
+        return None, None
  
 def send_email(subject, body, from_email, from_pw, to_email):
     second = datetime.now().second
@@ -94,9 +89,12 @@ def send_email(subject, body, from_email, from_pw, to_email):
     day = datetime.now().day
     month = datetime.now().month + 1
     year = datetime.now().year
+    if month == 13:
+        month = 1
+        year += 1
     date = f"{day}/{month}/{year} {hour}:{minute}:{second}"
     
-    visa_bulletin = get_visa_bulletin(month, year)
+    visa_bulletin, link = get_visa_bulletin(month, year)
     
     if visa_bulletin is None:
         print(f"{date} - CHƯA CÓ LỊCH VISA THÁNG {str(month)}/{str(year)}")
@@ -109,6 +107,7 @@ def send_email(subject, body, from_email, from_pw, to_email):
         Hiện tại đã có lịch visa tháng của tháng {month}.
         Nội dung: F4 - {visa_bulletin}.
         Lịch Visa có vào lúc {date} (giờ Mỹ).
+        Link: {link}.
 
         Trân trọng.
 
@@ -152,7 +151,7 @@ while True:
     today = datetime.now()
     day = today.day
     
-    if 5 <= day <= 20 and email_sent == False:
+    if 5 <= day <= 29 and email_sent == False:
         continue_checking = True
 
     if continue_checking:  # Chỉ chạy từ ngày 5 đến ngày 20
@@ -167,7 +166,7 @@ while True:
         email_sent = False
         continue_checking = False
         
-    if 2 <= day < 5 or 20 < day <= 31:
+    if 2 <= day < 5 or 29 < day <= 31:
         print("Waiting...")
     
     time.sleep(10)
