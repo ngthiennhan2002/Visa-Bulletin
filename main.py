@@ -110,8 +110,7 @@ def send_email(subject, body, from_email, from_pw, to_email):
         Nội dung: F4 - {visa_bulletin}.
         Lịch Visa có vào lúc {date} (giờ Mỹ).
 
-        Trân trọng,
-        Nhân.
+        Trân trọng.
 
         P/s: Đây là email tự động.
         """
