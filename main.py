@@ -97,12 +97,12 @@ def send_email(subject, body, from_email, from_pw, to_email):
         print(f"{date} - CHƯA CÓ LỊCH VISA THÁNG {str(month)}/{str(year)}")
         return False
     else:
-        subject = f"[F4 - {visa_bulletin}. ĐÃ CÓ LỊCH VISA THÁNG {month}. F4: {visa_bulletin}"
+        subject = f"[F4 - {visa_bulletin}] IMPORTANT: ĐÃ CÓ LỊCH VISA THÁNG {month}. F4: {visa_bulletin}"
         body = f"""
         Xin chào,
 
-        Hiện tại đã có lịch visa của tháng {month}.
-        Nội dung: F4 ({visa_bulletin})
+        Hiện tại đã có lịch visa tháng của tháng {month}.
+        Nội dung: F4 - {visa_bulletin}.
         Lịch Visa có vào lúc {date} (giờ Mỹ).
 
         Trân trọng,
@@ -119,7 +119,10 @@ def send_email(subject, body, from_email, from_pw, to_email):
         msg['From'] = from_email
         msg['To'] = ', '.join(to_email)
         msg['Subject'] = subject
-    
+        msg["X-Priority"] = "1"  # Đánh dấu email ưu tiên cao
+        msg["X-MSMail-Priority"] = "High"
+        msg["Importance"] = "High"
+            
         # Thêm phần thân email
         msg.attach(MIMEText(body, 'plain'))
     
