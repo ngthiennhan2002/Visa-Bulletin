@@ -40,6 +40,11 @@ months_dict = {1: "january",
                12: "december"}
 
 def check_status(month, year):
+    if month == 13:
+        month = 1
+        year += 1
+        link = f"https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin/{year}/visa-bulletin-for-{month}-{year}.html"
+    
     if month in months_dict:
         month = months_dict[month]
 
@@ -87,7 +92,7 @@ def send_email(subject, body, from_email, from_pw, to_email):
     minute = datetime.now().minute
     hour = datetime.now().hour
     day = datetime.now().day
-    month = datetime.now().month
+    month = datetime.now().month + 1
     year = datetime.now().year
     date = f"{day}/{month}/{year} {hour}:{minute}:{second}"
     
