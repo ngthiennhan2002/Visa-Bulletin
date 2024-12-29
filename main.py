@@ -19,7 +19,7 @@ auth_token = '9ad32741979fdc445ee2b7c41d2965d7'
 from_email = "nhan.sg.americanstudy@gmail.com"
 from_pw = "qrre fexe jkwd kskf"
     
-with open("Visa-Bulletin\emails.csv", mode="r") as file:
+with open("emails.csv", mode="r") as file:
     reader = csv.reader(file)
     to_email = [row[0] for row in reader]
 
