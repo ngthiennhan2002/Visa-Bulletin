@@ -6,6 +6,7 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import time
+import csv
 # from twilio.rest import Client
 # from playsound import playsound
 
@@ -14,6 +15,16 @@ app_pw = "qrre fexe jkwd kskf"
 
 account_sid = 'ACe15a540cabe3463d3f59e4b40cbb4757'
 auth_token = '9ad32741979fdc445ee2b7c41d2965d7'
+
+from_email = "nhan.sg.americanstudy@gmail.com"
+from_pw = "qrre fexe jkwd kskf"
+    
+with open("Visa-Bulletin\emails.csv", mode="r") as file:
+    reader = csv.reader(file)
+    to_email = [row[0] for row in reader]
+
+subject = "Test"
+body = ''
 
 months_dict = {1: "january",
                2: "february",
@@ -70,13 +81,6 @@ def get_visa_bulletin(month, year):
                 return td_value
     else:
         return None
-       
-from_email = "nhan.sg.americanstudy@gmail.com"
-from_pw = "qrre fexe jkwd kskf"
-# to_email = ["ngthiennhan2002@gmail.com", "ngthienphuc2006@gmail.com", "ngthien11@gmail.com"]
-to_email = ["ngthiennhan2002@gmail.com"]
-subject = "Test"
-body = ''
  
 def send_email(subject, body, from_email, from_pw, to_email):
     second = datetime.now().second
@@ -99,7 +103,7 @@ def send_email(subject, body, from_email, from_pw, to_email):
 
         Hiện tại đã có lịch visa tháng của tháng {month}.
         Nội dung: F4 ({visa_bulletin})
-        Lịch Visa có vào lúc {date}.
+        Lịch Visa có vào lúc {date} (giờ Mỹ).
 
         Trân trọng,
         Nhân.
@@ -141,7 +145,7 @@ while True:
     today = datetime.now()
     day = today.day
     
-    if 5 <= day <= 30 and email_sent == False:
+    if 5 <= day <= 29 and email_sent == False:
         continue_checking = True
 
     if continue_checking:  # Chỉ chạy từ ngày 5 đến ngày 20
@@ -156,7 +160,7 @@ while True:
         email_sent = False
         continue_checking = False
         
-    if 2 <= day < 5 or 30 < day <= 31:
+    if 2 <= day < 5 or 29 < day <= 31:
         print("Waiting...")
     
     time.sleep(10)
