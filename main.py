@@ -142,7 +142,7 @@ def send_email(subject, body, from_email, from_pw, to_email):
             print(f"Không thể gửi email. Lỗi: {e}")
 
 
-def running_announcement(to_email):
+def running_announcement(from_email, to_email):
     subject = f"Running Visa Bulletin"
     body = f"""
     Đây là email tự động để kiểm tra xem ứng dụng Visa Bulletin vẫn đang chạy...
@@ -203,7 +203,7 @@ while True:
      
     sent_checking = False    
     if today.minute % 5 == 0 and sent_checking == False:
-        running_announcement("ngthiennhan2002@gmail.com")
+        running_announcement("nhan.sg.americanstudy@gmail.com", "ngthiennhan2002@gmail.com")
         sent_checking = True
     elif today.minute % 5 != 0:
         sent_checking = False
