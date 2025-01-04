@@ -187,7 +187,7 @@ while True:
         continue_checking = True
 
     if continue_checking:  # Chỉ chạy từ ngày 5 đến ngày 20
-        # check = send_email(subject, body, from_email, from_pw, to_email)
+        check = send_email(subject, body, from_email, from_pw, to_email)
         check = 0
         if check:
             continue_checking = False
@@ -202,10 +202,10 @@ while True:
     if 2 <= day < 5 or 20 < day <= 31:
         print("Waiting...")
        
-    if today.minute % 5 == 0 and sent_checking == False:
+    if today.minute == 30 and sent_checking == False:
         running_announcement("nhan.sg.americanstudy@gmail.com", "ngthiennhan2002@gmail.com")
         sent_checking = True
-    elif today.minute % 5 != 0:
+    elif today.minute != 30:
         sent_checking = False
     
-    time.sleep(5)
+    time.sleep(10)
