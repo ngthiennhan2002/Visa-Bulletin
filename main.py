@@ -177,6 +177,7 @@ def running_announcement(from_email, to_email):
 
 email_sent = False  # Trạng thái theo dõi việc gửi email
 continue_checking = False
+sent_checking = False
 
 while True:
     today = datetime.now()
@@ -200,8 +201,7 @@ while True:
         
     if 2 <= day < 5 or 20 < day <= 31:
         print("Waiting...")
-     
-    sent_checking = False    
+       
     if today.minute % 5 == 0 and sent_checking == False:
         running_announcement("nhan.sg.americanstudy@gmail.com", "ngthiennhan2002@gmail.com")
         sent_checking = True
