@@ -81,7 +81,7 @@ def get_visa_bulletin(month, year):
                 return td_value, link
     else:
         return None, None
- 
+
 def send_email(subject, body, from_email, from_pw, to_email):
     second = datetime.now().second
     minute = datetime.now().minute
@@ -113,8 +113,6 @@ def send_email(subject, body, from_email, from_pw, to_email):
 
         P/s: Đây là email tự động.
         """
-        
-        from_email = from_email
         password = from_pw
     
         # Tạo một đối tượng MIMEMultipart
@@ -144,6 +142,39 @@ def send_email(subject, body, from_email, from_pw, to_email):
             print(f"Không thể gửi email. Lỗi: {e}")
 
 
+def running_announcement(to_email):
+    subject = f"Running Visa Bulletin"
+    body = f"""
+    Đây là email tự động để kiểm tra xem ứng dụng Visa Bulletin vẫn đang chạy...
+    """
+    password = from_pw
+
+    # Tạo một đối tượng MIMEMultipart
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = ', '.join(to_email)
+    msg['Subject'] = subject
+    msg["X-Priority"] = "1"  # Đánh dấu email ưu tiên cao
+    msg["X-MSMail-Priority"] = "High"
+    msg["Importance"] = "High"
+        
+    # Thêm phần thân email
+    msg.attach(MIMEText(body, 'plain'))
+
+    try:
+        # Kết nối tới server SMTP của Gmail
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(from_email, password)
+        text = msg.as_string()
+        server.sendmail(from_email, to_email, text)
+        server.quit()
+        print("Email đã được gửi thành công!")
+        # playsound("D:\\Videos\Criminal.mp4")
+        return True
+    except Exception as e:
+        print(f"Không thể gửi email. Lỗi: {e}")
+
 email_sent = False  # Trạng thái theo dõi việc gửi email
 continue_checking = False
 
@@ -155,7 +186,8 @@ while True:
         continue_checking = True
 
     if continue_checking:  # Chỉ chạy từ ngày 5 đến ngày 20
-        check = send_email(subject, body, from_email, from_pw, to_email)
+        # check = send_email(subject, body, from_email, from_pw, to_email)
+        check = 0
         if check:
             continue_checking = False
             email_sent = True
@@ -168,5 +200,8 @@ while True:
         
     if 2 <= day < 5 or 20 < day <= 31:
         print("Waiting...")
+        
+    if today.minute % 5 == 0:
+        running_announcement("ngthiennhan2002@gmail.com")
     
-    time.sleep(10)
+    time.sleep(5)
