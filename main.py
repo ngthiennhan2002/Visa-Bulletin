@@ -202,10 +202,10 @@ while True:
     if 2 <= day < 5 or 20 < day <= 31:
         print("Waiting...")
        
-    if today.minute == 30 and sent_checking == False:
+    if today.hour == 12 and sent_checking == False:
         running_announcement("nhan.sg.americanstudy@gmail.com", "ngthiennhan2002@gmail.com")
         sent_checking = True
-    elif today.minute != 30:
+    elif today.minute != 12:
         sent_checking = False
     
-    time.sleep(10)
+    time.sleep(5)
