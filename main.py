@@ -39,16 +39,17 @@ months_dict = {1: "january",
                12: "december"}
 
 def convert_timezone(gmt_time):
-    gmt_format = "%a, %d %b %Y %H:%M:%S %Z"  # Định dạng chuỗi thời gian
-    gmt_datetime = datetime.strptime(gmt_time, gmt_format)
+    if gmt_time != None:
+        gmt_format = "%a, %d %b %Y %H:%M:%S %Z"  # Định dạng chuỗi thời gian
+        gmt_datetime = datetime.strptime(gmt_time, gmt_format)
 
-    gmt_timezone = pytz.timezone("GMT")
-    gmt_datetime = gmt_timezone.localize(gmt_datetime)
+        gmt_timezone = pytz.timezone("GMT")
+        gmt_datetime = gmt_timezone.localize(gmt_datetime)
 
-    vietnam_timezone = pytz.timezone("Asia/Ho_Chi_Minh")
-    vietnam_datetime = gmt_datetime.astimezone(vietnam_timezone)
-    
-    return str(vietnam_datetime.strftime('%d-%m-%Y %H:%M:%S'))
+        vietnam_timezone = pytz.timezone("Asia/Ho_Chi_Minh")
+        vietnam_datetime = gmt_datetime.astimezone(vietnam_timezone)
+        
+        return str(vietnam_datetime.strftime('%d-%m-%Y %H:%M:%S'))
 
 
 def check_status(month, year):
