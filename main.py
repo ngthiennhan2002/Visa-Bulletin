@@ -120,7 +120,7 @@ def send_email(subject, body, from_email, from_pw, to_email):
         print(f"{date} - CHƯA CÓ LỊCH VISA THÁNG {str(month)}/{str(year)}")
         return False
     else:
-        subject = f"[F4 - {visa_bulletin}] IMPORTANT: ĐÃ CÓ LỊCH VISA THÁNG {month}"
+        subject = f"ĐANG TEST LẠI [F4 - {visa_bulletin}] IMPORTANT: ĐÃ CÓ LỊCH VISA THÁNG {month}"
         body = f"""
         Xin chào,
 
