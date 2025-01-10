@@ -64,7 +64,7 @@ def check_status(month, year):
     try:
         last_modified = requests.head(link).headers['Last-Modified']
     except:
-        last_modified
+        last_modified = None
     return res.status_code, link, last_modified
     
 def get_visa_bulletin(month, year):
