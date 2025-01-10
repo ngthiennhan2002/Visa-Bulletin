@@ -104,7 +104,7 @@ def send_email(subject, body, from_email, from_pw, to_email):
     minute = datetime.now().minute
     hour = datetime.now().hour
     day = datetime.now().day
-    month = datetime.now().month
+    month = datetime.now().month + 1
     year = datetime.now().year
     if month == 13:
         month = 1
@@ -120,7 +120,8 @@ def send_email(subject, body, from_email, from_pw, to_email):
         print(f"{date} - CHƯA CÓ LỊCH VISA THÁNG {str(month)}/{str(year)}")
         return False
     else:
-        subject = f"ĐANG TEST LẠI [F4 - {visa_bulletin}] IMPORTANT: ĐÃ CÓ LỊCH VISA THÁNG {month}"
+        subject = f"[F4 - {visa_bulletin}] IMPORTANT: ĐÃ CÓ LỊCH VISA THÁNG {month}"
+        # subject = f"ĐANG TEST LẠI [F4 - {visa_bulletin}] IMPORTANT: ĐÃ CÓ LỊCH VISA THÁNG {month}"
         body = f"""
         Xin chào,
 
