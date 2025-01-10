@@ -60,9 +60,7 @@ def check_status(month, year):
         link = f"https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin/{new_year}/visa-bulletin-for-{month}-{year}.html"
     else:
         link = f"https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin/{year}/visa-bulletin-for-{month}-{year}.html"
-
     res = requests.get(link)
-    
     try:
         last_modified = requests.head(link).headers['Last-Modified']
     except:
