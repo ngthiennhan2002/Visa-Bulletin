@@ -221,10 +221,10 @@ while True:
     if 2 <= day < 5 or 20 < day <= 31:
         print("Waiting...")
        
-    if today.hour == 8 and sent_checking == False:
+    if (today.hour == 5 or today.hour == 11) and sent_checking == False: # 12h trưa và 6h chiều
         running_announcement("nhan.sg.americanstudy@gmail.com", "ngthiennhan2002@gmail.com")
         sent_checking = True
-    elif today.hour != 8:
+    elif today.hour != 5 and today.hour != 11:
         sent_checking = False
     
     time.sleep(5)
