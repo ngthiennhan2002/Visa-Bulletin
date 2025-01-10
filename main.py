@@ -7,8 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import time
 import csv
-# from twilio.rest import Client
-# from playsound import playsound
+import pytz
 
 port = 465
 app_pw = "qrre fexe jkwd kskf"
@@ -39,6 +38,19 @@ months_dict = {1: "january",
                11: "november",
                12: "december"}
 
+def convert_timezone(gmt_time):
+    gmt_format = "%a, %d %b %Y %H:%M:%S %Z"  # Định dạng chuỗi thời gian
+    gmt_datetime = datetime.strptime(gmt_time, gmt_format)
+
+    gmt_timezone = pytz.timezone("GMT")
+    gmt_datetime = gmt_timezone.localize(gmt_datetime)
+
+    vietnam_timezone = pytz.timezone("Asia/Ho_Chi_Minh")
+    vietnam_datetime = gmt_datetime.astimezone(vietnam_timezone)
+    
+    return str(vietnam_datetime.strftime('%d-%m-%Y %H:%M:%S'))
+
+
 def check_status(month, year):
     if month in months_dict:
         month = months_dict[month]
@@ -50,10 +62,15 @@ def check_status(month, year):
         link = f"https://travel.state.gov/content/travel/en/legal/visa-law0/visa-bulletin/{year}/visa-bulletin-for-{month}-{year}.html"
 
     res = requests.get(link)
-    return res.status_code, link
+    
+    try:
+        last_modified = requests.head(link).headers['Last-Modified']
+    except:
+        last_modified
+    return res.status_code, link, last_modified
     
 def get_visa_bulletin(month, year):
-    status_code, link = check_status(month, year)
+    status_code, link, last_modified = check_status(month, year)
     n_second = datetime.now().second
     n_minute = datetime.now().minute
     n_hour = datetime.now().hour
@@ -78,35 +95,40 @@ def get_visa_bulletin(month, year):
                 # Lấy giá trị của thẻ <td> thứ hai
                 td_value = tds_in_row_6[1].get_text().strip()
                 print(f"{n_date} - ĐÃ CÓ LỊCH VISA F4 {str(month).upper()}/{str(year)}:", td_value)
-                return td_value, link
+                return td_value, link, last_modified
     else:
-        return None, None
+        return None, None, None
 
 def send_email(subject, body, from_email, from_pw, to_email):
     second = datetime.now().second
     minute = datetime.now().minute
     hour = datetime.now().hour
     day = datetime.now().day
-    month = datetime.now().month + 1
+    month = datetime.now().month
     year = datetime.now().year
     if month == 13:
         month = 1
         year += 1
     date = f"{day}/{month}/{year} {hour}:{minute}:{second}"
     
-    visa_bulletin, link = get_visa_bulletin(month, year)
+    visa_bulletin, link, last_modified = get_visa_bulletin(month, year)
+    
+    gmt_time = last_modified
+    vietnam_time = convert_timezone(gmt_time)
     
     if visa_bulletin is None:
         print(f"{date} - CHƯA CÓ LỊCH VISA THÁNG {str(month)}/{str(year)}")
         return False
     else:
-        subject = f"[F4 - {visa_bulletin}] IMPORTANT: ĐÃ CÓ LỊCH VISA THÁNG {month}. F4: {visa_bulletin}"
+        subject = f"[F4 - {visa_bulletin}] IMPORTANT: ĐÃ CÓ LỊCH VISA THÁNG {month}"
         body = f"""
         Xin chào,
 
-        Hiện tại đã có lịch visa tháng của tháng {month}.
+        Hiện tại đã có lịch visa tháng của Tháng {month} (Final Action Dates).
         Nội dung: F4 - {visa_bulletin}.
-        Lịch Visa có vào lúc {date} (giờ Mỹ).
+        Lịch Visa có vào lúc:
+           + Giờ Việt Nam: {vietnam_time}
+           + Giờ GMT: {gmt_time}
         Link: {link}.
 
         Trân trọng.
@@ -170,7 +192,6 @@ def running_announcement(from_email, to_email):
         server.sendmail(from_email, to_email, text)
         server.quit()
         print("Email đã được gửi thành công!")
-        # playsound("D:\\Videos\Criminal.mp4")
         return True
     except Exception as e:
         print(f"Không thể gửi email. Lỗi: {e}")
@@ -188,7 +209,6 @@ while True:
 
     if continue_checking:  # Chỉ chạy từ ngày 5 đến ngày 20
         check = send_email(subject, body, from_email, from_pw, to_email)
-        check = 0
         if check:
             continue_checking = False
             email_sent = True
