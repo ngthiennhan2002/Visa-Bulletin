@@ -200,7 +200,7 @@ email_sent = False  # Trạng thái theo dõi việc gửi email
 continue_checking = False
 sent_checking = False
 
-while True:
+"""while True:
     today = datetime.now()
     day = today.day
     
@@ -228,4 +228,4 @@ while True:
     elif today.hour != 5 and today.hour != 11:
         sent_checking = False
     
-    time.sleep(5)
+    time.sleep(5)"""
